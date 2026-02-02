@@ -1,5 +1,6 @@
 import redis from "../config/redis.js";
 import { promoteNextUser } from "../services/queueService.js";
+import { releaseSeats } from "../services/seatService.js";
 
 export function startQueueWorker() {
   setInterval(async () => {
@@ -10,12 +11,11 @@ export function startQueueWorker() {
 
       if (!exists) {
         console.log("⏱ Removing expired active user:", userId);
-
+        await releaseSeats("TRAIN-123", userId);
         await redis.srem("tatkal:active", userId);
+        await promoteNextUser()
       }
     }
-
-    await promoteNextUser();
 
   }, 2000); 
 }
