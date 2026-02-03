@@ -1,7 +1,8 @@
 import { lockSeats } from "../services/seatService.js";
 
 export async function selectSeats(req, res) {
-  const { trainId, seats, userId } = req.body;
+  const { trainId, seats } = req.body;
+  const userId=req.user.id
 
   if (!trainId || !seats || !userId) {
     return res.status(400).json({
